@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { open } from "@tauri-apps/api/dialog";
-import { ref } from "vue";
 import { invoke } from "@tauri-apps/api/tauri";
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
