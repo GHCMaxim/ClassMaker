@@ -4,6 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"nuxt:build": "pnpm tauri build",
+		"build": "pnpm tauri build",
 		"dev": "pnpm tauri dev",
 		"lint:rust": "cd src-tauri ; cargo clippy ; cargo fmt ; cd ..",
 		"lint:vue": "eslint --fix --ext .js,.vue --ignore-path .gitignore . --fix"
