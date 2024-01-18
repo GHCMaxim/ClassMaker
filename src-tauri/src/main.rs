@@ -6,7 +6,6 @@ use serde_json::json;
 use serde::Deserialize;
 use std::clone::Clone;
 use std::sync::Mutex;
-
 trait DataTypeDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result;
 }
@@ -40,6 +39,7 @@ struct ResultData {
     note: String,
     data: Vec<Time>,
     location: String,
+    lab: String,
     class_type: String,
     validity: String,
 }
@@ -144,6 +144,11 @@ fn sort_by_class_id(
                     } else {
                         format!("{:?}", row[16])
                     };
+                    let lab = if let DataType::String(value) = &row[17] {
+                        value.to_string()
+                    } else {
+                        format!("{:?}", row[17])
+                    };
                     let class_type = if let DataType::String(value) = &row[21] {
                         value.to_string()
                     } else {
@@ -164,6 +169,7 @@ fn sort_by_class_id(
                         note,
                         data: parsed_time,
                         location,
+                        lab,
                         class_type,
                         validity,
                     };
@@ -188,11 +194,15 @@ fn sort_by_class_id(
 }
 
 fn get_included_class(
-    state: &tauri::State<'_, SharedState>,
+    state: tauri::State<'_, SharedState>,
     included_id: String,
 ) -> Result<ResultData, String> {
     let mut excel = state.excel.lock().unwrap();
+    print!("Hello");
+    print!("{}", included_id);
+    let included_id = included_id.parse::<f64>().unwrap();
     if let Ok(range) = excel.as_mut().unwrap().worksheet_range("Sheet1") {
+        print!("The excel file is opened");
         let mut result: ResultData = ResultData {
             subject_id: "".to_string(),
             class_id: "".to_string(),
@@ -201,14 +211,17 @@ fn get_included_class(
             credit: "".to_string(),
             note: "".to_string(),
             data: Vec::new(),
+            lab: "".to_string(),
             location: "".to_string(),
             class_type: "".to_string(),
             validity: "".to_string(),
         };
         let mut i = 0;
         for row in range.rows() {
-            if let DataType::String(value) = &row[2] {
+            if let DataType::Float(value) = &row[2]{
+                println!("{}", value);
                 if value == &included_id && i == 0 {
+                    print!("There exists a class!");
                     let s = if let DataType::String(value) = &row[4] {
                         value.to_string()
                     } else {
@@ -254,6 +267,11 @@ fn get_included_class(
                     } else {
                         format!("{:?}", row[16])
                     };
+                    let lab = if let DataType::String(value) = &row[17] {
+                        value.to_string()
+                    } else {
+                        format!("{:?}", row[17])
+                    };
                     let class_type = if let DataType::String(value) = &row[21] {
                         value.to_string()
                     } else {
@@ -272,12 +290,15 @@ fn get_included_class(
                         class_title,
                         credit,
                         note,
+                        lab,
                         data: parsed_time,
                         location,
                         class_type,
                         validity,
                     };
+                    print!("{}", json!(data));
                     result = data;
+                    print!("{}", json!(result));
                     i+=1;
                 } else if value == &included_id && i != 0 {
                     let date = if let DataType::Float(value) = &row[10] {
@@ -294,6 +315,9 @@ fn get_included_class(
                     result.data.push(parsed_time[0]);
                     continue;
                 }
+                else{
+                    continue;
+                }
             }
         }
         Ok(result)
@@ -302,7 +326,7 @@ fn get_included_class(
     }
 }
 
-fn check_validity(state: &tauri::State<'_, SharedState>, time: Vec<Time>) -> bool {
+fn check_validity(state: tauri::State<'_, SharedState>, time: Vec<Time>) -> bool {
     let mut valid = true;
     let mut available_positions = state.available_positions.lock().unwrap();
     for i in 0..time.len() {
@@ -340,12 +364,13 @@ fn add_chosen_class(state: tauri::State<'_, SharedState>, data: ResultData) -> R
     let mut classes = Vec::new();
     let mut chosen_ids = Vec::new();
     classes.push(data.clone());
-    if data.class_id != data.included_id || data.included_id != "NULL"{
-        let included = get_included_class(&state, data.included_id).unwrap();
-        classes.push(included);
+    if data.class_id != data.included_id && data.included_id != "NULL"{
+        let included = get_included_class(state.clone(), data.included_id).unwrap();
+        classes.push(included.clone());
+        println!("{}", json!(included));
     }
     for i in 0..classes.len(){
-        if !check_validity(&state, classes[i].clone().data){
+        if !check_validity(state.clone(), classes[i].clone().data){
             failed_classes.push(classes[i].clone().class_id); 
         }          
     }
