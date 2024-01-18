@@ -3,8 +3,7 @@ import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import { ref } from "vue";
 import WeekView from "./components/WeekView.vue";
-
-
+import VueWeekScheduler from "vue-week-scheduler";
 
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
