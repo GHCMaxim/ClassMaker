@@ -131,7 +131,7 @@ onMounted(() => {
 											>Year view</a
 										>
 									</MenuItem> -->
-								<!-- </div>
+					<!-- </div>
 							</MenuItems>
 						</transition>
 					</Menu> -->
@@ -270,8 +270,7 @@ onMounted(() => {
 							M
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								></span
-							>
+							></span>
 						</button>
 						<button
 							type="button"
@@ -280,8 +279,7 @@ onMounted(() => {
 							T
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								></span
-							>
+							></span>
 						</button>
 						<button
 							type="button"
@@ -290,8 +288,7 @@ onMounted(() => {
 							W
 							<span
 								class="mt-1 flex size-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white"
-								></span
-							>
+							></span>
 						</button>
 						<button
 							type="button"
@@ -300,8 +297,7 @@ onMounted(() => {
 							T
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								></span
-							>
+							></span>
 						</button>
 						<button
 							type="button"
@@ -310,8 +306,7 @@ onMounted(() => {
 							F
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								></span
-							>
+							></span>
 						</button>
 						<button
 							type="button"
@@ -320,8 +315,7 @@ onMounted(() => {
 							S
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								></span
-							>
+							></span>
 						</button>
 						<button
 							type="button"
@@ -330,8 +324,7 @@ onMounted(() => {
 							S
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								></span
-							>
+							></span>
 						</button>
 					</div>
 
@@ -346,7 +339,7 @@ onMounted(() => {
 									class="items-center justify-center font-semibold text-gray-900"
 									></span
 								> -->
-								</span>
+							</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
@@ -355,7 +348,7 @@ onMounted(() => {
 									class="items-center justify-center font-semibold text-gray-900"
 									></span
 								> -->
-								</span>
+							</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span class="flex items-baseline"
@@ -364,7 +357,7 @@ onMounted(() => {
 									class="ml-1.5 flex size-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white"
 									></span
 								> -->
-								</span>
+							</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
@@ -373,7 +366,7 @@ onMounted(() => {
 									class="items-center justify-center font-semibold text-gray-900"
 									></span
 								> -->
-								</span>
+							</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
@@ -382,7 +375,7 @@ onMounted(() => {
 									class="items-center justify-center font-semibold text-gray-900"
 									></span
 								> -->
-								</span>
+							</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
