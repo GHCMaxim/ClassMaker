@@ -27,14 +27,14 @@ onMounted(() => {
 		<header
 			class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4"
 		>
-			<h1 class="text-lg font-semibold text-gray-900">
+			<!-- <h1 class="text-lg font-semibold text-gray-900">
 				<time datetime="2022-01">January 2022</time>
-			</h1>
+			</h1> -->
 			<div class="flex items-center">
 				<div
 					class="flex items-center rounded-md shadow-sm md:items-stretch"
 				>
-					<button
+					<!-- <button
 						type="button"
 						class="flex items-center justify-center rounded-l-md border border-r-0 border-gray-300 bg-white py-2 pl-3 pr-4 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
 					>
@@ -56,10 +56,10 @@ onMounted(() => {
 					>
 						<span class="sr-only">Next month</span>
 						<ChevronRightIcon class="size-5" aria-hidden="true" />
-					</button>
+					</button> -->
 				</div>
 				<div class="hidden md:ml-4 md:flex md:items-center">
-					<Menu as="div" class="relative">
+					<!-- <Menu as="div" class="relative">
 						<MenuButton
 							type="button"
 							class="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
@@ -130,20 +130,20 @@ onMounted(() => {
 											]"
 											>Year view</a
 										>
-									</MenuItem>
-								</div>
+									</MenuItem> -->
+								<!-- </div>
 							</MenuItems>
 						</transition>
-					</Menu>
-					<div class="ml-6 h-6 w-px bg-gray-300" />
-					<button
+					</Menu> -->
+					<!-- <div class="ml-6 h-6 w-px bg-gray-300" /> -->
+					<!-- <button
 						type="button"
 						class="ml-6 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 					>
 						Add event
-					</button>
+					</button> -->
 				</div>
-				<Menu as="div" class="relative ml-6 md:hidden">
+				<!-- <Menu as="div" class="relative ml-6 md:hidden">
 					<MenuButton
 						class="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500"
 					>
@@ -245,7 +245,7 @@ onMounted(() => {
 							</div>
 						</MenuItems>
 					</transition>
-				</Menu>
+				</Menu> -->
 			</div>
 		</header>
 		<div
@@ -270,7 +270,7 @@ onMounted(() => {
 							M
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								>10</span
+								></span
 							>
 						</button>
 						<button
@@ -280,7 +280,7 @@ onMounted(() => {
 							T
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								>11</span
+								></span
 							>
 						</button>
 						<button
@@ -290,7 +290,7 @@ onMounted(() => {
 							W
 							<span
 								class="mt-1 flex size-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white"
-								>12</span
+								></span
 							>
 						</button>
 						<button
@@ -300,7 +300,7 @@ onMounted(() => {
 							T
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								>13</span
+								></span
 							>
 						</button>
 						<button
@@ -310,7 +310,7 @@ onMounted(() => {
 							F
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								>14</span
+								></span
 							>
 						</button>
 						<button
@@ -320,7 +320,7 @@ onMounted(() => {
 							S
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								>15</span
+								></span
 							>
 						</button>
 						<button
@@ -330,7 +330,7 @@ onMounted(() => {
 							S
 							<span
 								class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900"
-								>16</span
+								></span
 							>
 						</button>
 					</div>
@@ -342,65 +342,65 @@ onMounted(() => {
 						<div class="flex items-center justify-center py-3">
 							<span
 								>Mon
-								<span
+								<!-- <span
 									class="items-center justify-center font-semibold text-gray-900"
-									>10</span
-								></span
-							>
+									></span
+								> -->
+								</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
 								>Tue
-								<span
+								<!-- <span
 									class="items-center justify-center font-semibold text-gray-900"
-									>11</span
-								></span
-							>
+									></span
+								> -->
+								</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span class="flex items-baseline"
 								>Wed
-								<span
+								<!-- <span
 									class="ml-1.5 flex size-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white"
-									>12</span
-								></span
-							>
+									></span
+								> -->
+								</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
 								>Thu
-								<span
+								<!-- <span
 									class="items-center justify-center font-semibold text-gray-900"
-									>13</span
-								></span
-							>
+									></span
+								> -->
+								</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
 								>Fri
-								<span
+								<!-- <span
 									class="items-center justify-center font-semibold text-gray-900"
-									>14</span
-								></span
-							>
+									></span
+								> -->
+								</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
 								>Sat
-								<span
+								<!-- <span
 									class="items-center justify-center font-semibold text-gray-900"
-									>15</span
-								></span
-							>
+									></span
+								> -->
+							</span>
 						</div>
 						<div class="flex items-center justify-center py-3">
 							<span
 								>Sun
-								<span
+								<!-- <span
 									class="items-center justify-center font-semibold text-gray-900"
-									>16</span
-								></span
-							>
+									></span
+								></span -->
+							</span>
 						</div>
 					</div>
 				</div>
