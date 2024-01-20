@@ -1,9 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use office::{DataType, Excel};
+use serde::Deserialize;
 use serde::Serialize;
 use serde_json::json;
-use serde::Deserialize;
 use std::clone::Clone;
 use std::sync::Mutex;
 trait DataTypeDisplay {
@@ -218,7 +218,7 @@ fn get_included_class(
         };
         let mut i = 0;
         for row in range.rows() {
-            if let DataType::Float(value) = &row[2]{
+            if let DataType::Float(value) = &row[2] {
                 println!("{}", value);
                 if value == &included_id && i == 0 {
                     print!("There exists a class!");
@@ -299,7 +299,7 @@ fn get_included_class(
                     print!("{}", json!(data));
                     result = data;
                     print!("{}", json!(result));
-                    i+=1;
+                    i += 1;
                 } else if value == &included_id && i != 0 {
                     let date = if let DataType::Float(value) = &row[10] {
                         (*value as i32).to_string()
@@ -314,8 +314,7 @@ fn get_included_class(
                     let parsed_time = vec![parse_time(date, time)];
                     result.data.push(parsed_time[0]);
                     continue;
-                }
-                else{
+                } else {
                     continue;
                 }
             }
@@ -358,31 +357,34 @@ fn check_validity(state: tauri::State<'_, SharedState>, time: Vec<Time>) -> bool
 }
 
 #[tauri::command]
-fn add_chosen_class(state: tauri::State<'_, SharedState>, data: ResultData) -> Result<String, String> {
+fn add_chosen_class(
+    state: tauri::State<'_, SharedState>,
+    data: ResultData,
+) -> Result<String, String> {
     let mut failed_classes = Vec::new();
     let mut chosen_classes = state.chosen_classes.lock().unwrap();
     let mut classes = Vec::new();
     let mut chosen_ids = Vec::new();
     classes.push(data.clone());
-    if data.class_id != data.included_id && data.included_id != "NULL"{
+    if data.class_id != data.included_id && data.included_id != "NULL" {
         let included = get_included_class(state.clone(), data.included_id).unwrap();
         classes.push(included.clone());
         println!("{}", json!(included));
     }
-    for i in 0..classes.len(){
-        if !check_validity(state.clone(), classes[i].clone().data){
-            failed_classes.push(classes[i].clone().class_id); 
-        }          
+    for i in 0..classes.len() {
+        if !check_validity(state.clone(), classes[i].clone().data) {
+            failed_classes.push(classes[i].clone().class_id);
+        }
     }
-    if failed_classes.len() == 0{
-        for i in 0..classes.len(){
+    if failed_classes.len() == 0 {
+        for i in 0..classes.len() {
             chosen_classes.push(classes[i].clone());
         }
-        for i in 0..chosen_classes.len(){
+        for i in 0..chosen_classes.len() {
             chosen_ids.push(chosen_classes[i].clone().class_id);
         }
         Ok(format!("Các lớp đã chọn: {:?}", chosen_ids))
-    }else{
+    } else {
         Err(format!("Failed classes: {:?}", failed_classes))
     }
 }
