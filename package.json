@@ -7,7 +7,7 @@
 		"build": "pnpm tauri build",
 		"dev": "pnpm tauri dev",
 		"lint:rust": "cd src-tauri ; cargo clippy ; cargo fmt ; cd ..",
-		"lint:vue": "eslint --fix --ext .vue --ignore-path .gitignore . --fix"
+		"lint:vue": "eslint --fix --ext .vue,.ts --ignore-path .gitignore . --fix"
 	},
 	"devDependencies": {
 		"@nuxtjs/eslint-module": "^4.1.0",
