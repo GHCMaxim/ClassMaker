@@ -1,16 +1,7 @@
 <script setup lang="ts">
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
-import { ref } from "vue";
-// import WeekView from "./components/WeekView.vue";
-import "vue-cal/dist/vuecal.css";
 
-// @ts-expect-error - no types
-import VueCal from "vue-cal";
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-
-// TODO: Use VueCalendar to replace WeekView
 interface Classes {
 	subject_id: string;
 	class_id: string;
@@ -220,7 +211,7 @@ function parseIncludedId(includedId: string): string {
 				</div>
 			</div>
 		</div>
-		<WeekView style="height: 600px" />
+		<WeekView />
 	</div>
 	<dialog v-if="confirmClass" class="modal" open>
 		<div class="modal-box">
@@ -270,6 +261,7 @@ function parseIncludedId(includedId: string): string {
 .btn {
 	margin-top: 1em;
 }
+
 .logo.vue:hover {
 	filter: drop-shadow(0 0 2em #249b73);
 }
