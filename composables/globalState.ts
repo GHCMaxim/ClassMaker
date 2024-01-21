@@ -40,6 +40,6 @@ const dailyEvents: Ref<Record<Weekday, CurEvent[]>> = ref({
 	Sun: [],
 });
 
-export { dailyEvents, CELL_HEIGHT, HOUR_OFFSET, Weekday  };
-export type { CurEvent};
+export { dailyEvents, CELL_HEIGHT, HOUR_OFFSET, Weekday };
+export type { CurEvent };
 export { message };

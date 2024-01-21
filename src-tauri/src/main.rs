@@ -1,13 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use core::time;
 use office::{DataType, Excel};
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::json;
-use tauri::utils::config::parse;
-use core::time;
 use std::clone::Clone;
 use std::sync::Mutex;
+use tauri::utils::config::parse;
 trait DataTypeDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result;
 }
@@ -393,7 +393,7 @@ fn add_chosen_class(
     if failed_classes.len() == 0 {
         for i in 0..classes.len() {
             chosen_classes.push(classes[i].clone());
-            for j in 0..parse_to_TableTime(classes[i].clone()).len(){
+            for j in 0..parse_to_TableTime(classes[i].clone()).len() {
                 return_value.push(parse_to_TableTime(classes[i].clone())[j].clone());
             }
         }
@@ -406,8 +406,8 @@ fn add_chosen_class(
     }
 }
 
-fn parse_day(day: i32) -> String{
-    match day{
+fn parse_day(day: i32) -> String {
+    match day {
         2 => "Mon",
         3 => "Tue",
         4 => "Wed",
@@ -415,7 +415,8 @@ fn parse_day(day: i32) -> String{
         6 => "Fri",
         7 => "Sat",
         _ => "Sun",
-    }.to_string()
+    }
+    .to_string()
 }
 
 fn parse_start_end(start: i32, end: i32) -> Vec<f32> {
@@ -423,21 +424,19 @@ fn parse_start_end(start: i32, end: i32) -> Vec<f32> {
     let mut hh: f32 = 0.0;
     let mut mm: f32 = 0.0;
     let parse_start = start.to_string();
-    if parse_start.len() < 4{
+    if parse_start.len() < 4 {
         hh = parse_start[0..1].parse::<f32>().unwrap();
-        mm = parse_start[1..3].parse::<f32>().unwrap() / 60.0;            
-    }
-    else{
+        mm = parse_start[1..3].parse::<f32>().unwrap() / 60.0;
+    } else {
         hh = parse_start[0..2].parse::<f32>().unwrap();
         mm = parse_start[2..4].parse::<f32>().unwrap() / 60.0;
     }
     let time_start = hh + mm;
     let parse_end = end.to_string();
-    if parse_end.len() < 4{
+    if parse_end.len() < 4 {
         hh = parse_end[0..1].parse::<f32>().unwrap();
-        mm = parse_end[1..3].parse::<f32>().unwrap() / 60.0;            
-    }
-    else{
+        mm = parse_end[1..3].parse::<f32>().unwrap() / 60.0;
+    } else {
         hh = parse_end[0..2].parse::<f32>().unwrap();
         mm = parse_end[2..4].parse::<f32>().unwrap() / 60.0;
     }
@@ -447,13 +446,13 @@ fn parse_start_end(start: i32, end: i32) -> Vec<f32> {
     result
 }
 
-fn parse_to_TableTime (data: ResultData) -> Vec<TableTime>{
+fn parse_to_TableTime(data: ResultData) -> Vec<TableTime> {
     let mut result = Vec::new();
     let CELL_OFFSET = 60.0;
     let HOUR_OFFSET = 6.0;
-    for i in 0..data.data.len(){
+    for i in 0..data.data.len() {
         let parsed_time = parse_start_end(data.data[i].start, data.data[i].end);
-        let tuple =  TableTime {
+        let tuple = TableTime {
             day: parse_day(data.data[i].day),
             render_top: (parsed_time[0] - HOUR_OFFSET) * CELL_OFFSET,
             render_height: (parsed_time[1] - parsed_time[0]) * CELL_OFFSET,
@@ -490,32 +489,32 @@ fn remove_chosen_class(
         validity: "".to_string(),
     };
     let mut class_removed = false;
-    for i in 0..chosen_classes.len(){
-        if chosen_classes[i].class_id == class_id{
+    for i in 0..chosen_classes.len() {
+        if chosen_classes[i].class_id == class_id {
             class_removed = true;
             data = chosen_classes[i].clone();
             chosen_classes.remove(i);
             break;
         }
     }
-    if !class_removed{
+    if !class_removed {
         return Err(format!("Class not found"));
     }
     let mut position_removed = false;
-    for i in 0..data.data.len(){
-        for j in 0..available_positions[data.data[i].day as usize - 2].len(){
+    for i in 0..data.data.len() {
+        for j in 0..available_positions[data.data[i].day as usize - 2].len() {
             let mut current_length = available_positions[data.data[i].day as usize - 2].len();
-            if available_positions[data.data[i].day as usize - 2][j] == data.data[i].start{
+            if available_positions[data.data[i].day as usize - 2][j] == data.data[i].start {
                 available_positions[data.data[i].day as usize - 2].remove(j);
-                available_positions[data.data[i].day as usize - 2].remove(j);         
+                available_positions[data.data[i].day as usize - 2].remove(j);
                 position_removed = true;
                 current_length -= 2;
             }
-            if j >= current_length{
+            if j >= current_length {
                 break;
             }
         }
-        if !position_removed{
+        if !position_removed {
             return Err(format!("Position not found"));
         }
     }

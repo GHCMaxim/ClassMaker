@@ -201,7 +201,7 @@ function parseIncludedId(includedId: string): string {
 	else return includedId;
 }
 
-// Watch for changes in confirmClass
+
 </script>
 
 <template>
