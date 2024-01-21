@@ -4,6 +4,8 @@ use office::{DataType, Excel};
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::json;
+use tauri::utils::config::parse;
+use core::time;
 use std::clone::Clone;
 use std::sync::Mutex;
 trait DataTypeDisplay {
@@ -27,6 +29,19 @@ struct Time {
     start: i32,
     end: i32,
     day: i32,
+}
+
+#[derive(Serialize, Clone, Deserialize)]
+struct TableTime {
+    day: String,
+    render_top: f32,
+    render_height: f32,
+    subject_name: String,
+    subject_id: String,
+    class_id: String,
+    class_type: String,
+    display_date: String,
+    room: String,
 }
 
 #[derive(Serialize, Clone, Deserialize)]
@@ -219,7 +234,6 @@ fn get_included_class(
         let mut i = 0;
         for row in range.rows() {
             if let DataType::Float(value) = &row[2] {
-                println!("{}", value);
                 if value == &included_id && i == 0 {
                     print!("There exists a class!");
                     let s = if let DataType::String(value) = &row[4] {
@@ -296,9 +310,7 @@ fn get_included_class(
                         class_type,
                         validity,
                     };
-                    print!("{}", json!(data));
                     result = data;
-                    print!("{}", json!(result));
                     i += 1;
                 } else if value == &included_id && i != 0 {
                     let date = if let DataType::Float(value) = &row[10] {
@@ -360,16 +372,18 @@ fn check_validity(state: tauri::State<'_, SharedState>, time: Vec<Time>) -> bool
 fn add_chosen_class(
     state: tauri::State<'_, SharedState>,
     data: ResultData,
-) -> Result<String, String> {
+) -> Result<Vec<TableTime>, String> {
     let mut failed_classes = Vec::new();
     let mut chosen_classes = state.chosen_classes.lock().unwrap();
     let mut classes = Vec::new();
     let mut chosen_ids = Vec::new();
+    let mut return_value: Vec<TableTime> = Vec::new();
+    let CELL_OFFSET = 60.0;
+    let HOUR_OFFSET = 6.0;
     classes.push(data.clone());
     if data.class_id != data.included_id && data.included_id != "NULL" {
         let included = get_included_class(state.clone(), data.included_id).unwrap();
-        classes.push(included.clone());
-        println!("{}", json!(included));
+        classes.push(included);
     }
     for i in 0..classes.len() {
         if !check_validity(state.clone(), classes[i].clone().data) {
@@ -379,15 +393,141 @@ fn add_chosen_class(
     if failed_classes.len() == 0 {
         for i in 0..classes.len() {
             chosen_classes.push(classes[i].clone());
+            for j in 0..parse_to_TableTime(classes[i].clone()).len(){
+                return_value.push(parse_to_TableTime(classes[i].clone())[j].clone());
+            }
         }
         for i in 0..chosen_classes.len() {
             chosen_ids.push(chosen_classes[i].clone().class_id);
         }
-        Ok(format!("Các lớp đã chọn: {:?}", chosen_ids))
+        Ok(return_value)
     } else {
-        Err(format!("Failed classes: {:?}", failed_classes))
+        Err(format!("Failed class(es): {:?}", failed_classes))
     }
 }
+
+fn parse_day(day: i32) -> String{
+    match day{
+        2 => "Mon",
+        3 => "Tue",
+        4 => "Wed",
+        5 => "Thu",
+        6 => "Fri",
+        7 => "Sat",
+        _ => "Sun",
+    }.to_string()
+}
+
+fn parse_start_end(start: i32, end: i32) -> Vec<f32> {
+    let mut result = Vec::new();
+    let mut hh: f32 = 0.0;
+    let mut mm: f32 = 0.0;
+    let parse_start = start.to_string();
+    if parse_start.len() < 4{
+        hh = parse_start[0..1].parse::<f32>().unwrap();
+        mm = parse_start[1..3].parse::<f32>().unwrap() / 60.0;            
+    }
+    else{
+        hh = parse_start[0..2].parse::<f32>().unwrap();
+        mm = parse_start[2..4].parse::<f32>().unwrap() / 60.0;
+    }
+    let time_start = hh + mm;
+    let parse_end = end.to_string();
+    if parse_end.len() < 4{
+        hh = parse_end[0..1].parse::<f32>().unwrap();
+        mm = parse_end[1..3].parse::<f32>().unwrap() / 60.0;            
+    }
+    else{
+        hh = parse_end[0..2].parse::<f32>().unwrap();
+        mm = parse_end[2..4].parse::<f32>().unwrap() / 60.0;
+    }
+    let time_end = hh + mm;
+    result.push(time_start);
+    result.push(time_end);
+    result
+}
+
+fn parse_to_TableTime (data: ResultData) -> Vec<TableTime>{
+    let mut result = Vec::new();
+    let CELL_OFFSET = 60.0;
+    let HOUR_OFFSET = 6.0;
+    for i in 0..data.data.len(){
+        let parsed_time = parse_start_end(data.data[i].start, data.data[i].end);
+        let tuple =  TableTime {
+            day: parse_day(data.data[i].day),
+            render_top: (parsed_time[0] - HOUR_OFFSET) * CELL_OFFSET,
+            render_height: (parsed_time[1] - parsed_time[0]) * CELL_OFFSET,
+            subject_name: data.class_title.clone(),
+            subject_id: data.subject_id.clone(),
+            class_id: data.class_id.clone(),
+            class_type: data.class_type.clone(),
+            display_date: format!("{}-{}", data.data[i].start, data.data[i].end),
+            room: data.location.clone(),
+        };
+        result.push(tuple);
+    }
+    result
+}
+
+#[tauri::command]
+fn remove_chosen_class(
+    state: tauri::State<'_, SharedState>,
+    class_id: String,
+) -> Result<String, String> {
+    let mut chosen_classes = state.chosen_classes.lock().unwrap();
+    let mut available_positions = state.available_positions.lock().unwrap();
+    let mut data = ResultData {
+        subject_id: "".to_string(),
+        class_id: "".to_string(),
+        included_id: "".to_string(),
+        class_title: "".to_string(),
+        credit: "".to_string(),
+        note: "".to_string(),
+        data: Vec::new(),
+        lab: "".to_string(),
+        location: "".to_string(),
+        class_type: "".to_string(),
+        validity: "".to_string(),
+    };
+    let mut class_removed = false;
+    for i in 0..chosen_classes.len(){
+        if chosen_classes[i].class_id == class_id{
+            class_removed = true;
+            data = chosen_classes[i].clone();
+            chosen_classes.remove(i);
+            break;
+        }
+    }
+    if !class_removed{
+        return Err(format!("Class not found"));
+    }
+    let mut position_removed = false;
+    for i in 0..data.data.len(){
+        for j in 0..available_positions[data.data[i].day as usize - 2].len(){
+            let mut current_length = available_positions[data.data[i].day as usize - 2].len();
+            if available_positions[data.data[i].day as usize - 2][j] == data.data[i].start{
+                available_positions[data.data[i].day as usize - 2].remove(j);
+                available_positions[data.data[i].day as usize - 2].remove(j);         
+                position_removed = true;
+                current_length -= 2;
+            }
+            if j >= current_length{
+                break;
+            }
+        }
+        if !position_removed{
+            return Err(format!("Position not found"));
+        }
+    }
+
+    Ok(format!("Class removed"))
+}
+#[tauri::command]
+fn get_chosen_classes(state: tauri::State<'_, SharedState>) -> Vec<ResultData> {
+    let chosen_classes = state.chosen_classes.lock().unwrap();
+    chosen_classes.clone()
+}
+
 fn main() {
     let initial_positions: Vec<Vec<i32>> = vec![Vec::new(); 6];
     let chosen_classes: Vec<ResultData> = Vec::new();
@@ -401,7 +541,9 @@ fn main() {
             greet,
             parse_file,
             sort_by_class_id,
-            add_chosen_class
+            add_chosen_class,
+            remove_chosen_class,
+            get_chosen_classes
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

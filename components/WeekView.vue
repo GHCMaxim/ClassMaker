@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Weekday } from '#imports';
+import { invoke } from '@tauri-apps/api';
+
 const WEEKDAYS = Object.values(Weekday);
 
 // 6AM -> 9PM
@@ -12,6 +15,26 @@ const HOURS = Array.from({ length: 16 }, (_, i) => i + 6).map((hour) => {
 			return `${hour - 12}PM`;
 	}
 });
+
+function enumKeys<O extends object, K extends keyof O = keyof O>(obj: O): K[] {
+        return Object.keys(obj).filter(k => !Number.isNaN(k)) as K[]
+}
+
+async function deleteClass(box: CurEvent): Promise<void> {
+	const response = await invoke("remove_chosen_class", { classId: box.class_id });
+	message.value = response as string;
+	for (const weekdays in Weekday){
+		let weekday = weekdays as Weekday;
+		for (let i = 0 ; i < dailyEvents.value[weekday].length; i++){
+			if (dailyEvents.value[weekday][i].class_id == box.class_id){
+				dailyEvents.value[weekday].splice(i, 1);
+				console.log(dailyEvents.value[weekday]);
+			}
+		}
+	}
+}
+
+
 </script>
 
 <template>
@@ -81,7 +104,11 @@ const HOURS = Array.from({ length: 16 }, (_, i) => i + 6).map((hour) => {
 						><br />
 						<span>{{ event.displayDate }}</span
 						><br />
-						<span>{{ event.room }}</span>
+						<span>{{ event.room }}</span
+						><br />
+						<span>{{ event.class_type }}</span> 
+						<br />
+						<button class=" 1w-full bg-red-500 text-white rounded" @click="deleteClass(event)">Xoá môn học</button>
 					</button>
 				</div>
 			</div>
