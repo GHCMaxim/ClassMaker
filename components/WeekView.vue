@@ -109,7 +109,7 @@ async function deleteClass(box: CurEvent): Promise<void> {
 						<span>{{ event.class_type }}</span>
 						<br />
 						<button
-							class="1w-full rounded bg-red-500 text-white"
+							class=" ml-4 btn-sm btn btn-active btn-error text-white "
 							@click="deleteClass(event)"
 						>
 							Xoá môn học

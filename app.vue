@@ -89,7 +89,7 @@ async function selectClass(data: Classes): Promise<void> {
 					break;
 				}
 				else{
-					labs_req.value.push(chosenClasses.value[i].class_id);
+					labs_req.value.push(chosenClasses.value[i].subject_id);
 				}
 			}
 		}
@@ -98,7 +98,7 @@ async function selectClass(data: Classes): Promise<void> {
 		}
 	}
 	if (data.class_type == "TN"){
-		labs_req.value = labs_req.value.filter((item) => item !== data.class_id);
+		labs_req.value = labs_req.value.filter((item) => item !== data.subject_id);
 	}
 }
 
@@ -221,11 +221,11 @@ function parseIncludedId(includedId: string): string {
 				<input
 					type="text"
 					v-model="textboxValue"
-					class="form-input"
+					class="input input-primary w-full max-w-xs"
 					placeholder="Mã học phần"
 				/>
 				<button
-					class="btn btn-primary ml-2"
+					class="btn btn-primary ml-2 mb-3"
 					@click="submit"
 					:disabled="!isFileParsed"
 				>

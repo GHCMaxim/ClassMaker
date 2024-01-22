@@ -235,7 +235,7 @@ fn get_included_class(
         for row in range.rows() {
             if let DataType::Float(value) = &row[2] {
                 if value == &included_id && i == 0 {
-                    print!("There exists a class!");
+                    println!("There exists a class!");
                     let s = if let DataType::String(value) = &row[4] {
                         value.to_string()
                     } else {
@@ -354,10 +354,17 @@ fn check_validity(state: tauri::State<'_, SharedState>, time: Vec<Time>) -> bool
             if available_positions[time[i].day as usize - 2][j] == time[i].start
                 && available_positions[time[i].day as usize - 2][j + 1] == time[i].end
             {
+                valid = true;
                 break;
             }
             valid = false;
-            available_positions[time[i].day as usize - 2].remove(j);
+        }
+        if !valid{
+            let index = available_positions[time[i].day as usize - 2]
+                .iter()
+                .position(|x| *x == time[i].start)
+                .unwrap();
+            available_positions[time[i].day as usize - 2].remove(index);
             let index = available_positions[time[i].day as usize - 2]
                 .iter()
                 .position(|x| *x == time[i].end)
@@ -542,7 +549,7 @@ fn main() {
             sort_by_class_id,
             add_chosen_class,
             remove_chosen_class,
-            get_chosen_classes
+            get_chosen_classes,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
