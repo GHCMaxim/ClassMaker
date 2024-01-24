@@ -35,6 +35,34 @@ async function deleteClass(box: CurEvent): Promise<void> {
 		}
 	}
 }
+
+function handleMouseEnterEvent(target: EventTarget | null): void {
+	if (target === null) return;
+	const element = target as HTMLElement;
+
+	element.style.maxHeight = "100vh";
+	element.style.transform = "scale(1.01)";
+	element.style.zIndex = "100";
+}
+
+function handleMouseLeaveEvent(
+	target: EventTarget | null,
+	renderHeight: number,
+): void {
+	if (target === null) return;
+	const element = target as HTMLElement;
+	element.style.maxHeight = `${renderHeight}px`;
+	element.style.transform = "scale(1)";
+}
+
+function handleTransitionEnd(target: EventTarget | null) {
+	if (target === null) return;
+	const element = target as HTMLElement;
+
+	if (element.style.transform !== "scale(1)") return;
+
+	element.style.zIndex = "0";
+}
 </script>
 
 <template>
@@ -88,29 +116,39 @@ async function deleteClass(box: CurEvent): Promise<void> {
 
 					<!-- Each element is an event -->
 					<button
-						v-for="event in dailyEvents[day]"
+						v-for="anEvent in dailyEvents[day]"
 						class="event-element absolute w-[calc(100%-0.5rem)] overflow-hidden rounded-md bg-primary px-3 py-2 text-start text-black shadow-[0_-3px_20px_-5px_rgba(0,0,0,0.5)] hover:z-[100] hover:scale-[1.03]"
 						:style="{
-							top: `${event.renderTop}px`,
+							top: `${anEvent.renderTop}px`,
 							transitionProperty: 'max-height, transform',
 							transitionDuration: '0.3s',
 							transitionTimingFunction:
 								'cubic-bezier(0.4, 0, 0.2, 1)',
+							maxHeight: `${anEvent.renderHeight}px`,
 						}"
-						:class="`event-${day}`"
+						@mouseenter="handleMouseEnterEvent($event.target)"
+						@mouseleave="
+							handleMouseLeaveEvent(
+								$event.target,
+								anEvent.renderHeight,
+							)
+						"
+						@transitionend="handleTransitionEnd($event.target)"
 					>
+						>
 						<span class="font-bold"
-							>{{ event.subjectId }} {{ event.subjectName }}</span
+							>{{ anEvent.subjectId }}
+							{{ anEvent.subjectName }}</span
 						><br />
-						<span>{{ event.displayDate }}</span
+						<span>{{ anEvent.displayDate }}</span
 						><br />
-						<span>{{ event.room }}</span
+						<span>{{ anEvent.room }}</span
 						><br />
-						<span>{{ event.class_type }}</span>
+						<span>{{ anEvent.class_type }}</span>
 						<br />
 						<button
-							class=" ml-4 btn-sm btn btn-active btn-error text-white "
-							@click="deleteClass(event)"
+							class="btn btn-error btn-active btn-sm ml-4 text-white"
+							@click="deleteClass(anEvent)"
 						>
 							Xoá môn học
 						</button>
@@ -120,13 +158,3 @@ async function deleteClass(box: CurEvent): Promise<void> {
 		</div>
 	</div>
 </template>
-
-<style scoped>
-.event-element {
-	min-height: 60px;
-	max-height: 60px;
-}
-.event-element:hover {
-	max-height: 200px;
-}
-</style>
