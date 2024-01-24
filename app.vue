@@ -23,16 +23,16 @@ interface Time {
 	end: string;
 }
 
-interface TableTime{
-	day: String,
-    render_top: number,
-    render_height: number,
-    subject_name: String,
-    subject_id: String,
-    class_id: String,
-    class_type: String,
-    display_date: String,
-    room: String,
+interface TableTime {
+	day: string;
+	render_top: number;
+	render_height: number;
+	subject_name: string;
+	subject_id: string;
+	class_id: string;
+	class_type: string;
+	display_date: string;
+	room: string;
 }
 
 const chosenClasses = ref<Classes[]>([]);
@@ -80,25 +80,28 @@ async function selectClass(data: Classes): Promise<void> {
 		selectedData = null;
 		void confirm(data);
 	}
-	if (data.lab == "TN"){
-		try{
+	if (data.lab == "TN") {
+		try {
 			const response = await invoke("get_chosen_classes");
 			chosenClasses.value = response as Classes[];
-			for (let i = 0; i < chosenClasses.value.length; i++){
-				if (chosenClasses.value[i].subject_id == data.subject_id && chosenClasses.value[i].class_type == "TN"){
+			for (let i = 0; i < chosenClasses.value.length; i++) {
+				if (
+					chosenClasses.value[i].subject_id == data.subject_id &&
+					chosenClasses.value[i].class_type == "TN"
+				) {
 					break;
-				}
-				else{
+				} else {
 					labs_req.value.push(chosenClasses.value[i].subject_id);
 				}
 			}
-		}
-		catch (error){
+		} catch (error) {
 			console.log(error);
 		}
 	}
-	if (data.class_type == "TN"){
-		labs_req.value = labs_req.value.filter((item) => item !== data.subject_id);
+	if (data.class_type == "TN") {
+		labs_req.value = labs_req.value.filter(
+			(item) => item !== data.subject_id,
+		);
 	}
 }
 
@@ -106,9 +109,9 @@ async function confirm(data: Classes): Promise<void> {
 	try {
 		const response = await invoke("add_chosen_class", { data });
 		toAppend.value = response as TableTime[];
-		for (let i = 0; i < toAppend.value.length; i++){
-			let day_of_week = toAppend.value[i].day as Weekday;
-			let event_data: CurEvent = {
+		for (let i = 0; i < toAppend.value.length; i++) {
+			const day_of_week = toAppend.value[i].day as Weekday;
+			const event_data: CurEvent = {
 				day: day_of_week,
 				renderTop: toAppend.value[i].render_top,
 				renderHeight: toAppend.value[i].render_height,
@@ -118,7 +121,7 @@ async function confirm(data: Classes): Promise<void> {
 				class_id: toAppend.value[i].class_id.toString(),
 				class_type: toAppend.value[i].class_type.toString(),
 				room: toAppend.value[i].room.toString(),
-			} ;
+			};
 			dailyEvents.value[day_of_week].push(event_data);
 		}
 		classesList.value = [];
@@ -200,8 +203,6 @@ function parseIncludedId(includedId: string): string {
 	if (includedId === `String("NULL")`) return "Không có";
 	else return includedId;
 }
-
-
 </script>
 
 <template>
@@ -216,7 +217,7 @@ function parseIncludedId(includedId: string): string {
 			</button>
 			<div v-if="message" class="ml-2">{{ message }}</div>
 		</div>
-		<div class = "flex justify-between">
+		<div class="flex justify-between">
 			<div class="ml-4 mt-4 flex items-center">
 				<input
 					type="text"
@@ -225,7 +226,7 @@ function parseIncludedId(includedId: string): string {
 					placeholder="Mã học phần"
 				/>
 				<button
-					class="btn btn-primary ml-2 mb-3"
+					class="btn btn-primary mb-3 ml-2"
 					@click="submit"
 					:disabled="!isFileParsed"
 				>
